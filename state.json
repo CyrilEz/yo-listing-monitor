@@ -1,5 +1,132 @@
 {
-    "known_cex": [],
-    "last_price": 0,
-    "last_check": ""
+  "known_cex": [
+    {
+      "identifier": "binance",
+      "name": "Binance",
+      "pair": "BTC/USDT",
+      "price": 63316.81,
+      "volume": 896770009
+    },
+    {
+      "identifier": "bybit_spot",
+      "name": "Bybit",
+      "pair": "BTC/USDT",
+      "price": 63317.9,
+      "volume": 595542706
+    },
+    {
+      "identifier": "gate",
+      "name": "Gate",
+      "pair": "BTC/USDT",
+      "price": 63349.0,
+      "volume": 548042171
+    },
+    {
+      "identifier": "binance",
+      "name": "Binance",
+      "pair": "BTC/USDC",
+      "price": 63261.25,
+      "volume": 353632113
+    },
+    {
+      "identifier": "bitget",
+      "name": "Bitget",
+      "pair": "BTC/USDT",
+      "price": 63375.99,
+      "volume": 332271050
+    },
+    {
+      "identifier": "crypto_com",
+      "name": "Crypto.com Exchange",
+      "pair": "BTC/USD",
+      "price": 63254.35,
+      "volume": 272367156
+    },
+    {
+      "identifier": "bingx",
+      "name": "BingX",
+      "pair": "BTC/USDT",
+      "price": 63314.71,
+      "volume": 155120910
+    },
+    {
+      "identifier": "kucoin",
+      "name": "KuCoin",
+      "pair": "BTC/USDT",
+      "price": 63315.7,
+      "volume": 141039279
+    },
+    {
+      "identifier": "binance",
+      "name": "Binance",
+      "pair": "BTC/USD1",
+      "price": 63326.05,
+      "volume": 120093357
+    },
+    {
+      "identifier": "kraken",
+      "name": "Kraken",
+      "pair": "XBT/USD",
+      "price": 63312.9,
+      "volume": 117911755
+    },
+    {
+      "identifier": "crypto_com",
+      "name": "Crypto.com Exchange",
+      "pair": "BTC/USDT",
+      "price": 63311.24,
+      "volume": 107917417
+    },
+    {
+      "identifier": "bitfinex",
+      "name": "Bitfinex",
+      "pair": "BTC/USD",
+      "price": 63356.0,
+      "volume": 63700602
+    },
+    {
+      "identifier": "binance",
+      "name": "Binance",
+      "pair": "BTC/U",
+      "price": 63257.95,
+      "volume": 61025190
+    },
+    {
+      "identifier": "kraken",
+      "name": "Kraken",
+      "pair": "XBT/EUR",
+      "price": 55706.5,
+      "volume": 27619584
+    },
+    {
+      "identifier": "kraken",
+      "name": "Kraken",
+      "pair": "XBT/USDC",
+      "price": 63326.71,
+      "volume": 24990048
+    },
+    {
+      "identifier": "kucoin",
+      "name": "KuCoin",
+      "pair": "BTC/USDC",
+      "price": 63256.6,
+      "volume": 23301837
+    },
+    {
+      "identifier": "binance",
+      "name": "Binance",
+      "pair": "BTC/FDUSD",
+      "price": 63440.89,
+      "volume": 22491725
+    },
+    {
+      "identifier": "bitfinex",
+      "name": "Bitfinex",
+      "pair": "BTC/USDT",
+      "price": 63339.0,
+      "volume": 18044303
+    }
+  ],
+  "last_price": 0,
+  "last_check": ""
 }
