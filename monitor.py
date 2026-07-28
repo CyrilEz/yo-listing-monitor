@@ -1,176 +1,161 @@
 import json
 import os
-import requests
 from datetime import datetime
+
+import requests
 
 TOKEN_ID = "yo"
 
 STATE_FILE = "state.json"
 DOCS_DIR = "docs"
-HTML_FILE = os.path.join(DOCS_DIR, "index.html")
+STATUS_FILE = os.path.join(DOCS_DIR, "status.json")
 
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
+# Les principaux CEX.
+# Tu pourras compléter cette liste facilement.
 KNOWN_CEX = {
     "binance",
     "bybit_spot",
-    "okx",
     "coinbase_exchange",
+    "okx",
+    "kraken",
     "kucoin",
     "bitget",
-    "mexc",
     "gate",
+    "mexc",
     "crypto_com",
-    "kraken",
     "bitfinex",
     "htx",
-    "bingx"
+    "bingx",
 }
 
 
 def load_state():
     if not os.path.exists(STATE_FILE):
-        return {
-            "known_cex": [],
-            "last_price": 0,
-            "last_check": ""
-        }
+        return {"known_cex": []}
 
-    with open(STATE_FILE) as f:
+    with open(STATE_FILE, "r") as f:
         return json.load(f)
 
 
 def save_state(state):
     with open(STATE_FILE, "w") as f:
-        json.dump(state, f, indent=4)
+        json.dump(state, f, indent=2)
 
 
 def telegram(message):
 
-    if not TELEGRAM_TOKEN:
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        print("Telegram non configuré.")
         return
 
     requests.post(
         f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
         json={
             "chat_id": TELEGRAM_CHAT_ID,
-            "text": message
-        }
+            "text": message,
+        },
+        timeout=20,
     )
 
 
-def fetch():
+print("Lecture CoinGecko...")
 
-    url = f"https://api.coingecko.com/api/v3/coins/{TOKEN_ID}"
+r = requests.get(
+    f"https://api.coingecko.com/api/v3/coins/{TOKEN_ID}/tickers",
+    timeout=20,
+)
 
-    r = requests.get(url)
+r.raise_for_status()
 
-    r.raise_for_status()
-
-    return r.json()
-
-
-def generate_html(price, cex, checked):
-
-    os.makedirs(DOCS_DIR, exist_ok=True)
-
-    status = "🟢 Non listé"
-
-    if cex:
-        status = "🚨 LISTÉ SUR UN CEX"
-
-    html = f"""
-<!doctype html>
-
-<html>
-
-<head>
-
-<meta charset="utf-8">
-
-<title>YO Monitor</title>
-
-<style>
-
-body{{font-family:Arial;padding:40px;background:#111;color:white}}
-
-.card{{background:#222;padding:20px;border-radius:12px}}
-
-</style>
-
-</head>
-
-<body>
-
-<h1>YO Listing Monitor</h1>
-
-<div class="card">
-
-<h2>{status}</h2>
-
-<p><b>Dernier check :</b> {checked}</p>
-
-<p><b>Prix :</b> ${price}</p>
-
-<p><b>CEX détectés :</b></p>
-
-<ul>
-
-{''.join(f'<li>{x}</li>' for x in cex)}
-
-</ul>
-
-</div>
-
-</body>
-
-</html>
-"""
-
-    with open(HTML_FILE, "w", encoding="utf8") as f:
-        f.write(html)
-
-
-state = load_state()
-
-data = fetch()
-
-price = data["market_data"]["current_price"]["usd"]
+data = r.json()
 
 tickers = data["tickers"]
 
+price = None
+
 cex = []
+dex = []
 
-for t in tickers:
+for ticker in tickers:
 
-    identifier = t["market"]["identifier"]
+    if price is None:
+        price = ticker.get("last")
+
+    identifier = ticker["market"]["identifier"]
+
+    market_name = ticker["market"]["name"]
+
+    pair = f'{ticker["base"]}/{ticker["target"]}'
+
+    info = {
+        "identifier": identifier,
+        "name": market_name,
+        "pair": pair,
+        "price": ticker.get("last"),
+        "volume": ticker.get("converted_volume", {}).get("usd", 0),
+    }
 
     if identifier in KNOWN_CEX:
+        cex.append(info)
+    else:
+        dex.append(info)
 
-        cex.append(identifier)
+state = load_state()
 
-new_cex = list(set(cex) - set(state["known_cex"]))
+known = {x["identifier"] for x in state["known_cex"]}
 
-if new_cex:
+current = {x["identifier"] for x in cex}
 
-    telegram(
-        f"""🚨 Nouveau listing !
+new = current - known
+
+if new:
+
+    for exchange in cex:
+
+        if exchange["identifier"] in new:
+
+            telegram(
+                f"""🚨 Nouveau listing détecté
 
 Token : YO
 
-CEX : {', '.join(new_cex)}
+Exchange : {exchange['name']}
 
-Prix : ${price}
+Pair : {exchange['pair']}
+
+Prix : {exchange['price']}
+
+Volume USD : {exchange['volume']:.2f}
 """
-    )
+            )
 
-checked = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
+status = {
+    "token": "YO",
+    "listed": len(cex) > 0,
+    "last_check": datetime.utcnow().isoformat() + "Z",
+    "price": price,
+    "cex": cex,
+    "dex": dex,
+}
 
-generate_html(price, cex, checked)
+os.makedirs(DOCS_DIR, exist_ok=True)
+
+with open(STATUS_FILE, "w") as f:
+    json.dump(status, f, indent=2)
 
 state["known_cex"] = cex
-state["last_price"] = price
-state["last_check"] = checked
 
 save_state(state)
+
+print("------")
+
+print("Prix :", price)
+
+print("CEX :", len(cex))
+
+print("DEX :", len(dex))
+
+print("Terminé.")
