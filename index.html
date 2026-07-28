@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>YO Monitor</title>
+</head>
+<body>
+
+<h1>YO Monitor</h1>
+
+<pre id="status"></pre>
+
+<script>
+fetch("status.json")
+.then(r => r.json())
+.then(data => {
+    document.getElementById("status").textContent =
+        JSON.stringify(data, null, 2);
+});
+</script>
+
+</body>
+</html>
