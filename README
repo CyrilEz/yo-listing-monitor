@@ -1,0 +1,9 @@
+# YO Listing Monitor
+
+Ajouter deux secrets GitHub :
+
+TELEGRAM_TOKEN
+
+TELEGRAM_CHAT_ID
+
+Activer GitHub Pages sur le dossier docs/.
