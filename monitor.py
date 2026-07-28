@@ -4,7 +4,7 @@ from datetime import datetime
 
 import requests
 
-TOKEN_ID = "yo"
+TOKEN_ID = "bitcoin"
 
 STATE_FILE = "state.json"
 DOCS_DIR = "docs"
