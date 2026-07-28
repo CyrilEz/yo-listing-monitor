@@ -4,7 +4,7 @@ from datetime import datetime
 
 import requests
 
-TOKEN_ID = "bitcoin"
+TOKEN_ID = "yo"
 
 STATE_FILE = "state.json"
 DOCS_DIR = "docs"
@@ -118,7 +118,7 @@ if new:
         if exchange["identifier"] in new:
 
             telegram(
-                f"""🚨 Nouveau listing détecté
+                f"""🚨🚨🚨 Nouveau listing détecté 🚨
 
 Token : YO
 
