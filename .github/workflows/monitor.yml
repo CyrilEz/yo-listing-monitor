@@ -32,7 +32,15 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-
+     
+      - name: Debug
+        run: |
+          ls -la
+          ls -la docs
+          git status
+          cat state.json
+          cat docs/status.json
+          
       - name: Commit changes
         run: |
           git config user.name "github-actions"
